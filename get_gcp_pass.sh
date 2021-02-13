@@ -6,7 +6,6 @@
 # URL and ACCOUNT are taken from build vars in library
 export CONJUR_APPLIANCE_URL=https://conjur.eastus.cloudapp.azure.com
 export CONJUR_ACCOUNT=dev
-export CONJUR_CERT_FILE=./conjur-dev.pem
 
 ################  MAIN   ################
 # Takes 2 arguments:
@@ -29,7 +28,7 @@ main() {
   fi
 
  local encoded_var_name=$(urlify "$variable_name")
- curl -s --cacert $CONJUR_CERT_FILE -H "Content-Type: application/json" -H "Authorization: Token token=\"$ACCESS_TOKEN\"" $CONJUR_APPLIANCE_URL/secrets/$CONJUR_ACCOUNT/variable/$encoded_var_name
+ curl -s -k -H "Content-Type: application/json" -H "Authorization: Token token=\"$ACCESS_TOKEN\"" $CONJUR_APPLIANCE_URL/secrets/$CONJUR_ACCOUNT/variable/$encoded_var_name
  echo ""
 }
 
@@ -53,7 +52,7 @@ authn_host() {
   fi
 
   authn_gcp_response=$(curl -s \
-	  --cacert $CONJUR_CERT_FILE \
+	  -k \
 	  --request POST "$CONJUR_APPLIANCE_URL/authn-gcp/$CONJUR_ACCOUNT/authenticate" \
 	  -H 'Content-Type: application/x-www-form-urlencoded' \
 	  --data-urlencode jwt=$gcp_access_token)
